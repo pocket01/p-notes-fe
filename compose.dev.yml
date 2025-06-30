@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  # 開発環境用Next.jsアプリケーション
+  # TODO データベースは後ほど
+  pnotes-app-fe-dev:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+      # - DATABASE_URL=mysql://pnotes_user:pnotes_password@mysql:3306/pnotes
+      # - REDIS_URL=redis://redis:6379
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - pnotes-network
+    # depends_on:
+    #   - mysql
+    #   - redis
+    restart: unless-stopped
+    command: yarn dev
+
+  # # MySQL データベース（開発用）
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: pnotes-mysql-dev
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: rootpassword
+  #     MYSQL_DATABASE: pnotes
+  #     MYSQL_USER: pnotes_user
+  #     MYSQL_PASSWORD: pnotes_password
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - mysql_dev_data:/var/lib/mysql
+  #     - ./docker/mysql/init:/docker-entrypoint-initdb.d
+  #   networks:
+  #     - pnotes-network
+  #   restart: unless-stopped
+
+  # # Redis（開発用）
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: pnotes-redis-dev
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_dev_data:/data
+  #   networks:
+  #     - pnotes-network
+  #   restart: unless-stopped
+
+# volumes:
+#   mysql_dev_data:
+#   redis_dev_data:
+
+networks:
+  pnotes-network:
+    driver: bridge
