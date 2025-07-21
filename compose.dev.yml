@@ -3,7 +3,7 @@ version: "3.8"
 services:
   # 開発環境用Next.jsアプリケーション
   # TODO データベースは後ほど
-  pnotes-app-fe-dev:
+  app:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.dev
